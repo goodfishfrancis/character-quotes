@@ -15,8 +15,8 @@ import lombok.AllArgsConstructor;
 @Setter
 @AllArgsConstructor
 @Entity
-@Table(name="CHARACTER")
-public class Character {
+@Table(name="PERSONA")
+public class Persona {
 	
 	@Id
 	@Column(name="id")
@@ -26,7 +26,7 @@ public class Character {
 	private String name;
 	
 	
-	@OneToMany(mappedBy="character")
+	@OneToMany(mappedBy="persona")
 	private List<Quote> quotes;
 
 }
