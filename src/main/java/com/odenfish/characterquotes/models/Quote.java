@@ -26,7 +26,7 @@ public class Quote {
 	private String quote;
 	
 	@ManyToOne
-    @JoinColumn(name="character_id", nullable=false)
-	private Character character;
+    @JoinColumn(name="persona_id", nullable=false)
+	private Persona persona;
 
 }
