@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,21 +30,24 @@ public class PersonaController {
 		ResponseEntity<List<PersonaDTO>> response = null;
 		
 		try {
+			
 			List<PersonaDTO> personaDTOList = personaService.list();
 			if (personaDTOList.isEmpty()) {
+				
 				response = new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			}
 			else {
+				
 				response = new ResponseEntity<>(personaDTOList, HttpStatus.OK);
 			}
 			
 		}
 		catch (Exception e) {
+			
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 		return response;
-		
 	}
 	
 	@GetMapping("/characters/{id}")
@@ -58,18 +63,42 @@ public class PersonaController {
 			if (personaDTO != null) {
 				
 				response = new ResponseEntity<>(personaDTO, HttpStatus.OK);
-				
 			}
 			else {
 				
 				response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-				
 			}
 		}
 		catch (Exception e) {
 			
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		return response;
+	}
+	
+	
+	@PostMapping("/characters")
+	public ResponseEntity<List<PersonaDTO>> createPersona(@RequestBody PersonaDTO newPersona) {
+		
+		ResponseEntity<List<PersonaDTO>> response = null;
+		
+		try {
 			
+			List<PersonaDTO> personaDTOList = personaService.save(newPersona);
+			
+			if (personaDTOList.isEmpty()) {
+				
+				response = new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+			}
+			else {
+				
+				response = new ResponseEntity<>(personaDTOList, HttpStatus.CREATED);
+			}
+		}
+		catch(Exception e) {
+			
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 		return response;
