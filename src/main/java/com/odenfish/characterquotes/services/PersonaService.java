@@ -72,6 +72,25 @@ public class PersonaService {
 	}
 	
 	
+	// this method updates an existing persona
+	public List<PersonaDTO> update(PersonaDTO personaDTO) {
+		
+		// TODO
+		
+		
+		return this.getPersonaDTOList();
+	}
+	
+	// this method deletes an existing persona
+	public List<PersonaDTO> delete(Long id) {
+		
+		// TODO
+		
+		
+		return this.getPersonaDTOList();
+	}
+	
+	
 	
 	
 	/*********************************
