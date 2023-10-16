@@ -1,5 +1,6 @@
 package com.odenfish.characterquotes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -64,6 +65,32 @@ class CharacterQuotesApplicationTests {
 		
 		Assert.isTrue(personaDTO.getName().equalsIgnoreCase(mario_name), 
 				"[FAIL] Name does not equal " + mario_name);
+	}
+	
+	@Test 
+	void PersonaServiceSaveTest() {
+		
+		List<QuoteDTO> quoteDTOList = new ArrayList<>();
+		PersonaDTO personaDTO = new PersonaDTO();
+		personaDTO.setName("Test Persona");
+		
+		quoteDTOList.add(new QuoteDTO());
+		quoteDTOList.add(new QuoteDTO());
+		quoteDTOList.add(new QuoteDTO());
+		
+		int count = 1;
+		
+		for (QuoteDTO quote : quoteDTOList) {
+			quote.setQuote("Test " + count++);
+		}
+		
+		personaDTO.setQuotes(quoteDTOList);
+		
+		List<PersonaDTO> results = personaService.save(personaDTO);
+		
+		PersonaDTO newPersona = results.get(results.size() - 1);
+		
+		Assert.isTrue(newPersona.getName().equalsIgnoreCase(personaDTO.getName()), "[FAIL] New persona was saved unsuccessfully...");
 	}
 
 }
