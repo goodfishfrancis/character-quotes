@@ -90,7 +90,10 @@ class CharacterQuotesApplicationTests {
 		
 		PersonaDTO newPersona = results.get(results.size() - 1);
 		
-		Assert.isTrue(newPersona.getName().equalsIgnoreCase(personaDTO.getName()), "[FAIL] New persona was saved unsuccessfully...");
+		Assert.isTrue(newPersona.getName().equalsIgnoreCase(personaDTO.getName()), 
+				"[FAIL] New persona was saved unsuccessfully...");
+		
+		Assert.isTrue(newPersona.getQuotes().size() == 3, "[FAIL] New persona was saved unsuccessfully...");
 	}
 
 }

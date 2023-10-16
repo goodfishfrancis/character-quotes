@@ -64,7 +64,11 @@ public class PersonaService {
 				newQuote.setQuote(quote.getQuote());
 				quoteList.add(newQuote);
 			}
-			quoteRepository.saveAllAndFlush(quoteList);
+			quoteList = quoteRepository.saveAllAndFlush(quoteList);
+			
+			// TODO -> figure out real solution
+			persona.setQuotes(quoteList);
+			persona = personaRepository.saveAndFlush(persona);
 			
 		}
 		
