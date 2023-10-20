@@ -86,7 +86,8 @@ class CharacterQuotesApplicationTests {
 		
 		personaDTO.setQuotes(quoteDTOList);
 		
-		List<PersonaDTO> results = personaService.save(personaDTO);
+		personaService.save(personaDTO);
+		List<PersonaDTO> results = personaService.list();
 		
 		PersonaDTO newPersona = results.get(results.size() - 1);
 		

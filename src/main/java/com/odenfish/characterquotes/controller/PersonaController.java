@@ -84,7 +84,8 @@ public class PersonaController {
 		
 		try {
 			
-			List<PersonaDTO> personaDTOList = personaService.save(newPersona);
+			personaService.save(newPersona);
+			List<PersonaDTO> personaDTOList = personaService.list();
 			
 			if (personaDTOList.isEmpty()) {
 				
@@ -96,6 +97,7 @@ public class PersonaController {
 			}
 		}
 		catch(Exception e) {
+			System.out.println("[ERROR]: " + e.getMessage());
 			
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
