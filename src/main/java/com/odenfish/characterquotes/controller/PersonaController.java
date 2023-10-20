@@ -1,6 +1,8 @@
 package com.odenfish.characterquotes.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,8 +27,8 @@ public class PersonaController {
 	PersonaService personaService;
 	
 	@GetMapping("/characters")
-	public ResponseEntity<List<PersonaDTO>> getAllPersona() {
-		ResponseEntity<List<PersonaDTO>> response = null;
+	public ResponseEntity<Map<String, PersonaDTO>> getAllPersona() {
+		ResponseEntity<Map<String, PersonaDTO>> response = null;
 		
 		try {
 			
@@ -37,7 +39,7 @@ public class PersonaController {
 			}
 			else {
 				
-				response = new ResponseEntity<>(personaDTOList, HttpStatus.OK);
+				response = new ResponseEntity<>(getResponseMap(personaDTOList), HttpStatus.OK);
 			}
 			
 		}
@@ -78,9 +80,9 @@ public class PersonaController {
 	
 	
 	@PostMapping("/characters")
-	public ResponseEntity<List<PersonaDTO>> createPersona(@RequestBody PersonaDTO newPersona) {
+	public ResponseEntity<Map<String, PersonaDTO>> createPersona(@RequestBody PersonaDTO newPersona) {
 		
-		ResponseEntity<List<PersonaDTO>> response = null;
+		ResponseEntity<Map<String, PersonaDTO>> response = null;
 		
 		try {
 			
@@ -93,7 +95,7 @@ public class PersonaController {
 			}
 			else {
 				
-				response = new ResponseEntity<>(personaDTOList, HttpStatus.CREATED);
+				response = new ResponseEntity<>(getResponseMap(personaDTOList), HttpStatus.CREATED);
 			}
 		}
 		catch(Exception e) {
@@ -103,6 +105,18 @@ public class PersonaController {
 		}
 		
 		return response;
+	}
+	
+	
+	private Map<String, PersonaDTO> getResponseMap(List<PersonaDTO> personaDTOList) {
+		
+		Map<String, PersonaDTO> responseMap = new HashMap<>();
+		personaDTOList.forEach(personaDTO -> {
+			responseMap.put(personaDTO.getId().toString(), personaDTO);
+		});
+		
+		return responseMap;
+		
 	}
 	
 }
