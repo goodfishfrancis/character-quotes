@@ -109,12 +109,23 @@ public class PersonaService {
 	 * 								 *
 	 * 								 *
 	 *********************************/
+	
+	
 	// This takes a list of quotes and returns a list of quoteDTOs
 	private List<QuoteDTO> getQuoteDTOList(List<Quote> quoteList) {
+		
 		List<QuoteDTO> quoteDTOList = new ArrayList<>();
-		for (Quote quote : quoteList) {
-			quoteDTOList.add(new QuoteDTO(quote.getId(), quote.getQuote()));
+		
+		try {
+			
+			for (Quote quote : quoteList) {
+				quoteDTOList.add(new QuoteDTO(quote.getId(), quote.getQuote()));
+			}
 		}
+		catch (Exception e) {
+			System.out.println("[ERROR]: " + e.getMessage());
+		}
+		
 		
 		return quoteDTOList;
 	}
