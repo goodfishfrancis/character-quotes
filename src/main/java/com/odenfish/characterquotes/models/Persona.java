@@ -1,7 +1,9 @@
 package com.odenfish.characterquotes.models;
 
+import java.io.Serializable;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -21,8 +23,13 @@ import lombok.AllArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name="PERSONA")
-public class Persona {
+public class Persona implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8247801434977694871L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id")
@@ -32,7 +39,12 @@ public class Persona {
 	private String name;
 	
 	
-	@OneToMany(fetch = FetchType.EAGER, mappedBy="persona")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy="persona", cascade = CascadeType.ALL)
 	private List<Quote> quotes;
+	
+	public void setQuotes(List<Quote> quoteList) {
+		this.quotes = quoteList;
+		quotes.forEach(quote -> quote.setPersona(this));
+	}
 
 }

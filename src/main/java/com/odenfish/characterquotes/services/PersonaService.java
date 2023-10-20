@@ -34,6 +34,7 @@ public class PersonaService {
 		PersonaDTO personaDTO = null;
 		
 		if (personaRepository.existsById(id)) {
+			
 			Persona persona = personaRepository.findById(id).get();
 			List<QuoteDTO> quoteDTOList = this.getQuoteDTOList(persona.getQuotes()); 
 			 personaDTO = new PersonaDTO(persona.getId(), 
@@ -45,34 +46,36 @@ public class PersonaService {
 	
 	
 	// this method takes a PersonaDTO and saves a new Persona
-	public List<PersonaDTO> save(PersonaDTO newPersona) {
+	public void save(PersonaDTO newPersona) {
 		
-		// We save a new persona
-		Persona persona = new Persona();
-		persona.setName(newPersona.getName());
-		persona = personaRepository.saveAndFlush(persona);
-		Long newPersonaId = persona.getId();
-		
-		
-		// If there are new quotes to save, save them as well with new persona id
-		if (newPersona.getQuotes() != null) {
-			List<QuoteDTO> quoteDTOList = newPersona.getQuotes();
-			List<Quote> quoteList = new ArrayList<>();
-			for (QuoteDTO quote: quoteDTOList) {
-				Quote newQuote = new Quote();
-				newQuote.setPersona(persona);
-				newQuote.setQuote(quote.getQuote());
-				quoteList.add(newQuote);
-			}
-			quoteList = quoteRepository.saveAllAndFlush(quoteList);
+		try {
 			
-			// TODO -> figure out real solution
-			persona.setQuotes(quoteList);
-			persona = personaRepository.saveAndFlush(persona);
+			// We save a new persona
+			Persona persona = new Persona();
+			persona.setName(newPersona.getName());
+			
+			
+			// If there are new quotes to save, save them as well with new persona id
+			if (newPersona.getQuotes() != null) {
+				List<QuoteDTO> quoteDTOList = newPersona.getQuotes();
+				List<Quote> quoteList = new ArrayList<>();
+				
+				for (QuoteDTO quote: quoteDTOList) {
+					Quote newQuote = new Quote();
+					newQuote.setQuote(quote.getQuote());
+					quoteList.add(newQuote);
+				}
+				
+				persona.setQuotes(quoteList);
+				persona = personaRepository.saveAndFlush(persona);
+				
+			}
 			
 		}
+		catch (Exception e) {
+			System.out.println("[ERROR]: " + e.getMessage());
+		}
 		
-		return this.getPersonaDTOList();
 	}
 	
 	
@@ -107,12 +110,23 @@ public class PersonaService {
 	 * 								 *
 	 * 								 *
 	 *********************************/
+	
+	
 	// This takes a list of quotes and returns a list of quoteDTOs
 	private List<QuoteDTO> getQuoteDTOList(List<Quote> quoteList) {
+		
 		List<QuoteDTO> quoteDTOList = new ArrayList<>();
-		for (Quote quote : quoteList) {
-			quoteDTOList.add(new QuoteDTO(quote.getId(), quote.getQuote()));
+		
+		try {
+			
+			for (Quote quote : quoteList) {
+				quoteDTOList.add(new QuoteDTO(quote.getId(), quote.getQuote()));
+			}
 		}
+		catch (Exception e) {
+			System.out.println("[ERROR]: " + e.getMessage());
+		}
+		
 		
 		return quoteDTOList;
 	}
@@ -120,22 +134,31 @@ public class PersonaService {
 	
 	// This gets all persona and returns a list of PersonaDTOs
 	private List<PersonaDTO> getPersonaDTOList() {
-		List<Persona> personaList = personaRepository.findAll();
+		
 		List<PersonaDTO> personaDTOList = new ArrayList<>();
 		
-		
-		// For each persona in the list, get quotes and create list of quoteDTOs
-		// Then for each persona create a personaDTO and create list of personaDTOs
-		for (Persona persona : personaList) 
-		{ 
+		try {
+			List<Persona> personaList = personaRepository.findAll();
 			
-			List<Quote> quoteList = persona.getQuotes();
-			List<QuoteDTO> quoteDTOList = this.getQuoteDTOList(quoteList);
-		    PersonaDTO personaDTO = new PersonaDTO(persona.getId(), 
-		    									   persona.getName(),
-		    									   quoteDTOList);
-		    personaDTOList.add(personaDTO);
+			// For each persona in the list, get quotes and create list of quoteDTOs
+			// Then for each persona create a personaDTO and create list of personaDTOs
+			for (Persona persona : personaList) 
+			{ 
+				
+				List<Quote> quoteList = persona.getQuotes();
+				List<QuoteDTO> quoteDTOList = this.getQuoteDTOList(quoteList);
+			    PersonaDTO personaDTO = new PersonaDTO(persona.getId(), 
+			    									   persona.getName(),
+			    									   quoteDTOList);
+			    personaDTOList.add(personaDTO);
+			}
+			
 		}
+		catch (Exception e) {
+			System.out.println("[ERROR]: " + e.getMessage());
+		}
+		
+		
         return personaDTOList;
 	}
 }
