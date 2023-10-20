@@ -34,6 +34,7 @@ public class PersonaService {
 		PersonaDTO personaDTO = null;
 		
 		if (personaRepository.existsById(id)) {
+			
 			Persona persona = personaRepository.findById(id).get();
 			List<QuoteDTO> quoteDTOList = this.getQuoteDTOList(persona.getQuotes()); 
 			 personaDTO = new PersonaDTO(persona.getId(), 
@@ -48,23 +49,23 @@ public class PersonaService {
 	public void save(PersonaDTO newPersona) {
 		
 		try {
+			
 			// We save a new persona
 			Persona persona = new Persona();
 			persona.setName(newPersona.getName());
-//			persona = personaRepository.saveAndFlush(persona);
-//			Long newPersonaId = persona.getId();
 			
 			
 			// If there are new quotes to save, save them as well with new persona id
 			if (newPersona.getQuotes() != null) {
 				List<QuoteDTO> quoteDTOList = newPersona.getQuotes();
 				List<Quote> quoteList = new ArrayList<>();
+				
 				for (QuoteDTO quote: quoteDTOList) {
 					Quote newQuote = new Quote();
-//					newQuote.setPersona(persona);
 					newQuote.setQuote(quote.getQuote());
 					quoteList.add(newQuote);
 				}
+				
 				persona.setQuotes(quoteList);
 				persona = personaRepository.saveAndFlush(persona);
 				
