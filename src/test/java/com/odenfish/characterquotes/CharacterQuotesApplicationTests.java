@@ -96,5 +96,45 @@ class CharacterQuotesApplicationTests {
 		
 		Assert.isTrue(newPersona.getQuotes().size() == 3, "[FAIL] New persona was saved unsuccessfully...");
 	}
+	
+	@Test
+	void PersonaServiceUpdateTest() {
+		
+		String updateName = "Updated";
+		
+		List<QuoteDTO> quoteDTOList = new ArrayList<>();
+		
+		// first create a new persona
+		PersonaDTO personaDTO = new PersonaDTO();
+		personaDTO.setName("Test Persona");
+		
+		quoteDTOList.add(new QuoteDTO());
+		quoteDTOList.add(new QuoteDTO());
+		quoteDTOList.add(new QuoteDTO());
+		
+		int count = 1;
+		
+		for (QuoteDTO quote : quoteDTOList) {
+			quote.setQuote("Test " + count++);
+		}
+		
+		personaDTO.setQuotes(quoteDTOList);
+		
+		personaService.save(personaDTO);
+		
+		// now let's update the persona and save again
+		List<PersonaDTO> results = personaService.list();
+			
+		PersonaDTO newPersona = results.get(results.size() - 1); // most recent entity
+		
+		newPersona.setName(updateName);
+		newPersona.getQuotes().get(0).setQuote(updateName);
+		
+		Assert.isTrue(newPersona.getName().equalsIgnoreCase(updateName), 
+				"[FAIL] New persona was updated unsuccessfully...");
+		Assert.isTrue(newPersona.getQuotes().get(0).getQuote().equalsIgnoreCase(updateName), 
+				"[FAIL] New persona was updated unsuccessfully...");
+				
+	}
 
 }

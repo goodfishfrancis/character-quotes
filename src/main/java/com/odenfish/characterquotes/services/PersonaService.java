@@ -80,12 +80,31 @@ public class PersonaService {
 	
 	
 	// this method updates an existing persona
-	public List<PersonaDTO> update(PersonaDTO personaDTO) {
+	public void update(PersonaDTO personaDTO) {
 		
-		// TODO
+		try {
+			
+			// Get persona by id
+			Persona persona = personaRepository.findById(personaDTO.getId()).get();
+			
+			// update persona fields with values from personaDTO
+			persona.setName(personaDTO.getName());
+			
+			// If there are new quotes to save, save them as well with new persona id
+			if (personaDTO.getQuotes() != null) {
+				
+				persona.setQuotes(getQuotesFromQuoteDTOList(personaDTO.getQuotes()));
+				
+			}
+			
+			// save persona
+			persona = personaRepository.saveAndFlush(persona);
+			
+		}
+		catch (Exception e) {
+			System.out.println("[ERROR]: " + e.getMessage());
+		}
 		
-		
-		return this.getPersonaDTOList();
 	}
 	
 	// this method deletes an existing persona
@@ -160,5 +179,24 @@ public class PersonaService {
 		
 		
         return personaDTOList;
+	}
+	
+	private List<Quote> getQuotesFromQuoteDTOList(List<QuoteDTO> quoteDTOList) {
+		List<Quote> quoteList = new ArrayList<>();
+		
+		try {
+			
+			for (QuoteDTO quote: quoteDTOList) {
+				Quote newQuote = new Quote();
+				newQuote.setQuote(quote.getQuote());
+				quoteList.add(newQuote);
+			}
+			
+		}
+		catch (Exception e) {
+			System.out.println("[ERROR]: " + e.getMessage());
+		}
+		
+		return quoteList;
 	}
 }
