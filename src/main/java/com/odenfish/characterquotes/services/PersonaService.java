@@ -80,8 +80,8 @@ public class PersonaService {
 	
 	
 	// this method updates an existing persona
-	public void update(PersonaDTO personaDTO) {
-		
+	public PersonaDTO update(PersonaDTO personaDTO) {
+				
 		try {
 			
 			// Get persona by id
@@ -99,11 +99,14 @@ public class PersonaService {
 			
 			// save persona
 			persona = personaRepository.saveAndFlush(persona);
+			personaDTO = getById(persona.getId());
 			
 		}
 		catch (Exception e) {
 			System.out.println("[ERROR]: " + e.getMessage());
 		}
+		
+		return personaDTO;
 		
 	}
 	
@@ -189,6 +192,7 @@ public class PersonaService {
 			for (QuoteDTO quote: quoteDTOList) {
 				Quote newQuote = new Quote();
 				newQuote.setQuote(quote.getQuote());
+				newQuote.setId(quote.getId());
 				quoteList.add(newQuote);
 			}
 			

@@ -130,11 +130,32 @@ class CharacterQuotesApplicationTests {
 		newPersona.setName(updateName);
 		newPersona.getQuotes().get(0).setQuote(updateName);
 		
-		Assert.isTrue(newPersona.getName().equalsIgnoreCase(updateName), 
+		PersonaDTO updatedPersona = personaService.update(newPersona);
+		
+		
+		
+		Assert.isTrue(updatedPersona.getName().equalsIgnoreCase(updateName), 
 				"[FAIL] New persona was updated unsuccessfully...");
-		Assert.isTrue(newPersona.getQuotes().get(0).getQuote().equalsIgnoreCase(updateName), 
+		Assert.isTrue(updatedPersona.getQuotes().get(0).getQuote().equalsIgnoreCase(updateName), 
 				"[FAIL] New persona was updated unsuccessfully...");
-				
+		
+		
+		// now lets delete all quotes
+		updatedPersona.getQuotes().clear();
+		List<QuoteDTO> newQuoteDTOList = new ArrayList<>();
+		newQuoteDTOList.add(new QuoteDTO(null, "My quotes were updated!"));
+		
+		updatedPersona.setQuotes(newQuoteDTOList);
+		
+		updatedPersona = personaService.update(updatedPersona);
+		
+		Assert.isTrue(updatedPersona.getName().equalsIgnoreCase(updateName), 
+				"[FAIL] New persona was updated unsuccessfully...");
+		Assert.isTrue(updatedPersona.getQuotes().size() == 1, 
+				"[FAIL] New persona was updated unsuccessfully...");
+		Assert.isTrue(updatedPersona.getQuotes().get(0).getQuote().equalsIgnoreCase("My quotes were updated!"), 
+				"[FAIL] New persona was updated unsuccessfully...");
+		
 	}
 
 }

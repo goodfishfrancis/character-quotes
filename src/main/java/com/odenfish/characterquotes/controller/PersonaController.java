@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -106,6 +107,34 @@ public class PersonaController {
 		
 		return response;
 	}
+	
+	@PutMapping("/characters/{id}")
+	public ResponseEntity<Map<String, PersonaDTO>> updatePersona(@RequestBody PersonaDTO personaDTO, 
+																 @PathVariable("id") long id) {
+			
+			ResponseEntity<Map<String, PersonaDTO>> response = null;
+			
+			try {
+				PersonaDTO updatedPersonaDTO = personaService.update(personaDTO);
+				List<PersonaDTO> personaDTOList = personaService.list();
+				if (updatedPersonaDTO.equals(personaDTO)) {
+					
+					response = new ResponseEntity<>(getResponseMap(personaDTOList), HttpStatus.CREATED);
+					
+				}
+				else {
+					response = new ResponseEntity<>(getResponseMap(personaDTOList), HttpStatus.NOT_FOUND);
+					
+				}
+			}
+			catch(Exception e) {
+				System.out.println("[ERROR]: " + e.getMessage());
+				
+				return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+			
+			return response;
+		}
 	
 	
 	private Map<String, PersonaDTO> getResponseMap(List<PersonaDTO> personaDTOList) {
