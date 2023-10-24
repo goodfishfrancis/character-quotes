@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.odenfish.characterquotes.dto.PersonaDTO;
 import com.odenfish.characterquotes.dto.QuoteDTO;
+import com.odenfish.characterquotes.exceptions.ResourceNotFoundException;
 import com.odenfish.characterquotes.models.Persona;
 import com.odenfish.characterquotes.models.Quote;
 import com.odenfish.characterquotes.repositories.PersonaRepository;
@@ -112,12 +113,18 @@ public class PersonaService {
 	}
 	
 	// this method deletes an existing persona
-	public List<PersonaDTO> delete(Long id) {
+	public void delete(Long id) {
 		
-		// TODO
+		try {
+			Persona persona = personaRepository.findById(id)
+					.orElseThrow(() -> new ResourceNotFoundException("Persona not found with id: " + id));
+			
+		}
+		catch (ResourceNotFoundException e) {
+			System.out.println("[ERROR]: " + e.getMessage());
+			
+		}
 		
-		
-		return this.getPersonaDTOList();
 	}
 	
 	

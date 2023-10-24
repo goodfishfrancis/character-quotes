@@ -112,29 +112,29 @@ public class PersonaController {
 	public ResponseEntity<Map<String, PersonaDTO>> updatePersona(@RequestBody PersonaDTO personaDTO, 
 																 @PathVariable("id") long id) {
 			
-			ResponseEntity<Map<String, PersonaDTO>> response = null;
-			
-			try {
-				PersonaDTO updatedPersonaDTO = personaService.update(personaDTO);
-				List<PersonaDTO> personaDTOList = personaService.list();
-				if (updatedPersonaDTO.equals(personaDTO)) {
-					
-					response = new ResponseEntity<>(getResponseMap(personaDTOList), HttpStatus.CREATED);
-					
-				}
-				else {
-					response = new ResponseEntity<>(getResponseMap(personaDTOList), HttpStatus.NOT_FOUND);
-					
-				}
-			}
-			catch(Exception e) {
-				System.out.println("[ERROR]: " + e.getMessage());
+		ResponseEntity<Map<String, PersonaDTO>> response = null;
+		
+		try {
+			PersonaDTO updatedPersonaDTO = personaService.update(personaDTO);
+			List<PersonaDTO> personaDTOList = personaService.list();
+			if (updatedPersonaDTO.equals(personaDTO)) {
 				
-				return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+				response = new ResponseEntity<>(getResponseMap(personaDTOList), HttpStatus.CREATED);
+				
 			}
-			
-			return response;
+			else {
+				response = new ResponseEntity<>(getResponseMap(personaDTOList), HttpStatus.NOT_FOUND);
+				
+			}
 		}
+		catch(Exception e) {
+			System.out.println("[ERROR]: " + e.getMessage());
+			
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		return response;
+	}
 	
 	
 	private Map<String, PersonaDTO> getResponseMap(List<PersonaDTO> personaDTOList) {
