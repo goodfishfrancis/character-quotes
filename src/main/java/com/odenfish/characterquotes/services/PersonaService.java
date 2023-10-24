@@ -91,6 +91,7 @@ public class PersonaService {
 			persona.setName(personaDTO.getName());
 			
 			// If there are new quotes to save, save them as well with new persona id
+			// deleted quotes will have already been handled by QuoteController.delete()
 			if (personaDTO.getQuotes() != null) {
 				
 				persona.setQuotes(getQuotesFromQuoteDTOList(personaDTO.getQuotes()));
@@ -192,7 +193,12 @@ public class PersonaService {
 			for (QuoteDTO quote: quoteDTOList) {
 				Quote newQuote = new Quote();
 				newQuote.setQuote(quote.getQuote());
-				newQuote.setId(quote.getId());
+				
+				// if id != null then quote already exists
+				// otherwise it's a new quote and will get a new id upon save
+				if (quote.getId() != null) {
+					newQuote.setId(quote.getId());
+				}
 				quoteList.add(newQuote);
 			}
 			
