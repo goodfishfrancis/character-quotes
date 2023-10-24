@@ -119,6 +119,8 @@ public class PersonaService {
 			Persona persona = personaRepository.findById(id)
 					.orElseThrow(() -> new ResourceNotFoundException("Persona not found with id: " + id));
 			
+			personaRepository.deleteById(id);
+			
 		}
 		catch (ResourceNotFoundException e) {
 			System.out.println("[ERROR]: " + e.getMessage());

@@ -155,5 +155,42 @@ class CharacterQuotesApplicationTests {
 				"[FAIL] New persona was updated unsuccessfully...");
 		
 	}
+	
+	@Test
+	void personaServiceDeleteTest() {
+		
+		List<QuoteDTO> quoteDTOList = new ArrayList<>();
+		
+		// first create a new persona
+		PersonaDTO personaDTO = new PersonaDTO();
+		personaDTO.setName("Delete Test Persona");
+		
+		quoteDTOList.add(new QuoteDTO());
+		quoteDTOList.add(new QuoteDTO());
+		quoteDTOList.add(new QuoteDTO());
+		
+		int count = 1;
+		
+		for (QuoteDTO quote : quoteDTOList) {
+			quote.setQuote("Test " + count++);
+		}
+		
+		personaDTO.setQuotes(quoteDTOList);
+		
+		personaService.save(personaDTO);
+		
+		List<PersonaDTO> results = personaService.list();
+		
+		PersonaDTO newPersona = results.get(results.size()-1);
+		
+		Assert.isTrue(newPersona.getName().equalsIgnoreCase(personaDTO.getName()), 
+				"[FAIL] new persona was not saved...");
+		
+		// now lets delete the new persona
+		personaService.delete(newPersona.getId());
+		
+		Assert.isTrue(personaService.getById(newPersona.getId()) == null, "[Fail]");
+		
+	}
 
 }
