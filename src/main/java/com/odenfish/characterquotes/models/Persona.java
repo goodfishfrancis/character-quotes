@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,6 +41,7 @@ public class Persona implements Serializable{
 	
 	
 	@OneToMany(fetch = FetchType.EAGER, mappedBy="persona", cascade = CascadeType.ALL)
+	@OrderBy
 	private List<Quote> quotes;
 	
 	public void setQuotes(List<Quote> quoteList) {

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.odenfish.characterquotes.dto.PersonaDTO;
 import com.odenfish.characterquotes.dto.QuoteDTO;
+import com.odenfish.characterquotes.exceptions.ResourceNotFoundException;
 import com.odenfish.characterquotes.models.Persona;
 import com.odenfish.characterquotes.models.Quote;
 import com.odenfish.characterquotes.repositories.PersonaRepository;
@@ -80,21 +81,52 @@ public class PersonaService {
 	
 	
 	// this method updates an existing persona
-	public List<PersonaDTO> update(PersonaDTO personaDTO) {
+	public PersonaDTO update(PersonaDTO personaDTO) {
+				
+		try {
+			
+			// Get persona by id
+			Persona persona = personaRepository.findById(personaDTO.getId()).get();
+			
+			// update persona fields with values from personaDTO
+			persona.setName(personaDTO.getName());
+			
+			// If there are new quotes to save, save them as well with new persona id
+			// deleted quotes will have already been handled by QuoteController.delete()
+			if (personaDTO.getQuotes() != null) {
+				
+				persona.setQuotes(getQuotesFromQuoteDTOList(personaDTO.getQuotes()));
+				
+			}
+			
+			// save persona
+			persona = personaRepository.saveAndFlush(persona);
+			personaDTO = getById(persona.getId());
+			
+		}
+		catch (Exception e) {
+			System.out.println("[ERROR]: " + e.getMessage());
+		}
 		
-		// TODO
+		return personaDTO;
 		
-		
-		return this.getPersonaDTOList();
 	}
 	
 	// this method deletes an existing persona
-	public List<PersonaDTO> delete(Long id) {
+	public void delete(Long id) {
 		
-		// TODO
+		try {
+			Persona persona = personaRepository.findById(id)
+					.orElseThrow(() -> new ResourceNotFoundException("Persona not found with id: " + id));
+			
+			personaRepository.deleteById(id);
+			
+		}
+		catch (ResourceNotFoundException e) {
+			System.out.println("[ERROR]: " + e.getMessage());
+			
+		}
 		
-		
-		return this.getPersonaDTOList();
 	}
 	
 	
@@ -160,5 +192,30 @@ public class PersonaService {
 		
 		
         return personaDTOList;
+	}
+	
+	private List<Quote> getQuotesFromQuoteDTOList(List<QuoteDTO> quoteDTOList) {
+		List<Quote> quoteList = new ArrayList<>();
+		
+		try {
+			
+			for (QuoteDTO quote: quoteDTOList) {
+				Quote newQuote = new Quote();
+				newQuote.setQuote(quote.getQuote());
+				
+				// if id != null then quote already exists
+				// otherwise it's a new quote and will get a new id upon save
+				if (quote.getId() != null) {
+					newQuote.setId(quote.getId());
+				}
+				quoteList.add(newQuote);
+			}
+			
+		}
+		catch (Exception e) {
+			System.out.println("[ERROR]: " + e.getMessage());
+		}
+		
+		return quoteList;
 	}
 }

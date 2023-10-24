@@ -96,5 +96,102 @@ class CharacterQuotesApplicationTests {
 		
 		Assert.isTrue(newPersona.getQuotes().size() == 3, "[FAIL] New persona was saved unsuccessfully...");
 	}
+	
+	@Test
+	void PersonaServiceUpdateTest() {
+		
+		String updateName = "Updated";
+		
+		List<QuoteDTO> quoteDTOList = new ArrayList<>();
+		
+		// first create a new persona
+		PersonaDTO personaDTO = new PersonaDTO();
+		personaDTO.setName("Test Persona");
+		
+		quoteDTOList.add(new QuoteDTO());
+		quoteDTOList.add(new QuoteDTO());
+		quoteDTOList.add(new QuoteDTO());
+		
+		int count = 1;
+		
+		for (QuoteDTO quote : quoteDTOList) {
+			quote.setQuote("Test " + count++);
+		}
+		
+		personaDTO.setQuotes(quoteDTOList);
+		
+		personaService.save(personaDTO);
+		
+		// now let's update the persona and save again
+		List<PersonaDTO> results = personaService.list();
+			
+		PersonaDTO newPersona = results.get(results.size() - 1); // most recent entity
+		
+		newPersona.setName(updateName);
+		newPersona.getQuotes().get(0).setQuote(updateName);
+		
+		PersonaDTO updatedPersona = personaService.update(newPersona);
+		
+		
+		
+		Assert.isTrue(updatedPersona.getName().equalsIgnoreCase(updateName), 
+				"[FAIL] New persona was updated unsuccessfully...");
+		Assert.isTrue(updatedPersona.getQuotes().get(0).getQuote().equalsIgnoreCase(updateName), 
+				"[FAIL] New persona was updated unsuccessfully...");
+		
+		
+		// now lets add one new quote
+		QuoteDTO newQuote = new QuoteDTO();
+		newQuote.setQuote("This is a new test quote!");
+		
+		updatedPersona.getQuotes().add(newQuote);
+		
+		updatedPersona = personaService.update(updatedPersona);
+		
+		Assert.isTrue(updatedPersona.getQuotes().size() == 4, 
+				"[FAIL] New persona was updated unsuccessfully...");
+		Assert.isTrue(updatedPersona.getQuotes().get(updatedPersona.getQuotes().size()-1)
+				.getQuote().equalsIgnoreCase("This is a new test quote!"), 
+				"[FAIL] New persona was updated unsuccessfully...");
+		
+	}
+	
+	@Test
+	void personaServiceDeleteTest() {
+		
+		List<QuoteDTO> quoteDTOList = new ArrayList<>();
+		
+		// first create a new persona
+		PersonaDTO personaDTO = new PersonaDTO();
+		personaDTO.setName("Delete Test Persona");
+		
+		quoteDTOList.add(new QuoteDTO());
+		quoteDTOList.add(new QuoteDTO());
+		quoteDTOList.add(new QuoteDTO());
+		
+		int count = 1;
+		
+		for (QuoteDTO quote : quoteDTOList) {
+			quote.setQuote("Test " + count++);
+		}
+		
+		personaDTO.setQuotes(quoteDTOList);
+		
+		personaService.save(personaDTO);
+		
+		List<PersonaDTO> results = personaService.list();
+		
+		PersonaDTO newPersona = results.get(results.size()-1);
+		
+		Assert.isTrue(newPersona.getName().equalsIgnoreCase(personaDTO.getName()), 
+				"[FAIL] new persona was not saved...");
+		
+		// now lets delete the new persona
+		personaService.delete(newPersona.getId());
+		
+		Assert.isTrue(personaService.getById(newPersona.getId()) == null, 
+				"[Fail] Persona was not deleted successfully");
+		
+	}
 
 }
