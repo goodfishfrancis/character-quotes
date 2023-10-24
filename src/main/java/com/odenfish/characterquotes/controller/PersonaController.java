@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -128,6 +129,35 @@ public class PersonaController {
 			}
 		}
 		catch(Exception e) {
+			System.out.println("[ERROR]: " + e.getMessage());
+			
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		return response;
+	}
+	
+	@DeleteMapping("/characters/{id}")
+	public ResponseEntity<Map<String, PersonaDTO>> deletePersona(@PathVariable("id") long id) {
+		
+		ResponseEntity<Map<String, PersonaDTO>> response = null;
+		
+		try {
+			personaService.delete(id);
+			List<PersonaDTO> personaDTOList = personaService.list();
+			
+			if (personaDTOList.isEmpty()) {
+				
+				response = new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+				
+			}
+			else {
+				response = new ResponseEntity<>(getResponseMap(personaDTOList), HttpStatus.OK);
+				
+			}
+			
+		}
+		catch (Exception e) {
 			System.out.println("[ERROR]: " + e.getMessage());
 			
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
