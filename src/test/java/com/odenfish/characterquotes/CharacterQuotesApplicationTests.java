@@ -189,7 +189,8 @@ class CharacterQuotesApplicationTests {
 		// now lets delete the new persona
 		personaService.delete(newPersona.getId());
 		
-		Assert.isTrue(personaService.getById(newPersona.getId()) == null, "[Fail]");
+		Assert.isTrue(personaService.getById(newPersona.getId()) == null, 
+				"[Fail] Persona was not deleted successfully");
 		
 	}
 
